@@ -1,0 +1,156 @@
+﻿Γ£à SlowBuffer polyfill applied for Node.js 25 compatibility
+≡ƒöô SSL disabled for database connection (Development mode)
+Server is running for procxa at port 3000 
+Environment: development
+Database Host: 127.0.0.1
+[CORS] Allowed origins: http://localhost:5173, http://localhost:3000, http://localhost:5174, https://procxa-ai-backend-production.up.railway.app, http://localhost:5173
+[CORS] Credentials: enabled
+node : Γ¥î Unable to 
+connect to the database: 
+Unknown database 'procxa'
+At line:1 char:1
++ node 
+procurement_server.js 2>&1 
+| Out-File -FilePath 
+error3.txt -Enco ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo          
+    : NotSpecified: (Γ¥î U  
+  nable to c...tabase 'pr   
+ ocxa':String) [], Remot    
+eException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+C:\Kiaan\New_Proxa\backend_p
+rocxa\node_modules\sequelize
+\lib\dialects\mysql\connecti
+on-manager.js:102
+          throw new Sequeliz
+eErrors.ConnectionError(err)
+;
+                ^
+
+ConnectionError 
+[SequelizeConnectionError]: 
+Unknown database 'procxa'
+    at 
+ConnectionManager.connect (C
+:\Kiaan\New_Proxa\backend_pr
+ocxa\node_modules\sequelize\
+lib\dialects\mysql\connectio
+n-manager.js:102:17)
+    at process.processTicksA
+ndRejections (node:internal/
+process/task_queues:103:5)
+    at async 
+ConnectionManager._connect (
+C:\Kiaan\New_Proxa\backend_p
+rocxa\node_modules\sequelize
+\lib\dialects\abstract\conne
+ction-manager.js:222:24)
+    at async C:\Kiaan\New_Pr
+oxa\backend_procxa\node_modu
+les\sequelize\lib\dialects\a
+bstract\connection-manager.j
+s:174:32 {
+  parent: Error: Unknown 
+database 'procxa'
+      at Packet.asError (C:\
+Kiaan\New_Proxa\backend_proc
+xa\node_modules\mysql2\lib\p
+ackets\packet.js:738:17)
+      at 
+ClientHandshake.execute (C:\
+Kiaan\New_Proxa\backend_proc
+xa\node_modules\mysql2\lib\c
+ommands\command.js:29:26)
+      at 
+Connection.handlePacket (C:\
+Kiaan\New_Proxa\backend_proc
+xa\node_modules\mysql2\lib\c
+onnection.js:481:34)
+      at 
+PacketParser.onPacket (C:\Ki
+aan\New_Proxa\backend_procxa
+\node_modules\mysql2\lib\con
+nection.js:97:12)
+      at 
+PacketParser.executeStart (C
+:\Kiaan\New_Proxa\backend_pr
+ocxa\node_modules\mysql2\lib
+\packet_parser.js:75:16)
+      at Socket.<anonymous> 
+(C:\Kiaan\New_Proxa\backend_
+procxa\node_modules\mysql2\l
+ib\connection.js:104:25)
+      at Socket.emit 
+(node:events:508:28)
+      at addChunk (node:inte
+rnal/streams/readable:559:12
+)
+      at readableAddChunkPus
+hByteMode (node:internal/str
+eams/readable:510:3)
+      at Readable.push (node
+:internal/streams/readable:3
+90:5) {
+    code: 'ER_BAD_DB_ERROR',
+    errno: 1049,
+    sqlState: '42000',
+    sqlMessage: "Unknown 
+database 'procxa'",
+    sql: undefined
+  },
+  original: Error: Unknown 
+database 'procxa'
+      at Packet.asError (C:\
+Kiaan\New_Proxa\backend_proc
+xa\node_modules\mysql2\lib\p
+ackets\packet.js:738:17)
+      at 
+ClientHandshake.execute (C:\
+Kiaan\New_Proxa\backend_proc
+xa\node_modules\mysql2\lib\c
+ommands\command.js:29:26)
+      at 
+Connection.handlePacket (C:\
+Kiaan\New_Proxa\backend_proc
+xa\node_modules\mysql2\lib\c
+onnection.js:481:34)
+      at 
+PacketParser.onPacket (C:\Ki
+aan\New_Proxa\backend_procxa
+\node_modules\mysql2\lib\con
+nection.js:97:12)
+      at 
+PacketParser.executeStart (C
+:\Kiaan\New_Proxa\backend_pr
+ocxa\node_modules\mysql2\lib
+\packet_parser.js:75:16)
+      at Socket.<anonymous> 
+(C:\Kiaan\New_Proxa\backend_
+procxa\node_modules\mysql2\l
+ib\connection.js:104:25)
+      at Socket.emit 
+(node:events:508:28)
+      at addChunk (node:inte
+rnal/streams/readable:559:12
+)
+      at readableAddChunkPus
+hByteMode (node:internal/str
+eams/readable:510:3)
+      at Readable.push (node
+:internal/streams/readable:3
+90:5) {
+    code: 'ER_BAD_DB_ERROR',
+    errno: 1049,
+    sqlState: '42000',
+    sqlMessage: "Unknown 
+database 'procxa'",
+    sql: undefined
+  }
+}
+
+Node.js v25.2.1

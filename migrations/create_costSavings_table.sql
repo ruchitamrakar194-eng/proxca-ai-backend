@@ -1,0 +1,35 @@
+-- Migration script to create costSavings table
+-- Run this SQL script in your MySQL database to create the costSavings table if it's missing
+
+CREATE TABLE IF NOT EXISTS `costSavings` (
+  `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+  `supplierName` BIGINT NOT NULL,
+  `requesterName` VARCHAR(255) NOT NULL,
+  `departmentId` BIGINT NOT NULL,
+  `group` VARCHAR(255) DEFAULT "N/A",
+  `category` VARCHAR(255) NOT NULL,
+  `reportingYear` INT NOT NULL,
+  `currency` VARCHAR(255) NOT NULL,
+  `benefitStartMonth` VARCHAR(255) NOT NULL,
+  `benefitEndMonth` VARCHAR(255),
+  `typeOfCostSaving` VARCHAR(255) NOT NULL,
+  `historicalUnitPrice` VARCHAR(255),
+  `negotiatedUnitPrice` VARCHAR(255),
+  `reductionPerUnit` VARCHAR(255),
+  `currentPrice` VARCHAR(255),
+  `proposedPrice` VARCHAR(255),
+  `notesDescription` TEXT,
+  `forecastVolumes` JSON,
+  `sourcingBenefits` JSON,
+  `intakeRequest` BIGINT,
+  `userId` BIGINT,
+  `historicalUnitPrices` JSON,
+  `forecastVolumesMultiYear` JSON,
+  `additionalColumns` JSON,
+  `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_supplierName` (`supplierName`),
+  INDEX `idx_departmentId` (`departmentId`),
+  INDEX `idx_intakeRequest` (`intakeRequest`),
+  INDEX `idx_userId` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
