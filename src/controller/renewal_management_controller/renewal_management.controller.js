@@ -545,6 +545,68 @@ const delete_renewal_request = async (req, res) => {
 const process_renewal_request = async (req, res) => {
     try {
         const { id } = req.params;
+
+        if (typeof id === 'string' && id.startsWith('intake-')) {
+            const intakeId = id.split('-')[1];
+            const intake = await db.intake_request.findByPk(intakeId);
+            if (!intake) {
+                return res.status(404).json({
+                    status: false,
+                    message: 'Intake request not found'
+                });
+            }
+
+            // Find or create supplier by name
+            let supplierId = null;
+            if (intake.supplierName) {
+                let supp = await db.supplier.findOne({
+                    where: { name: intake.supplierName }
+                });
+                if (!supp && intake.supplierEmail) {
+                    supp = await db.supplier.findOne({
+                        where: { contactEmail: intake.supplierEmail }
+                    });
+                }
+                if (supp) {
+                    supplierId = supp.id;
+                } else {
+                    // Create a placeholder supplier if not found
+                    const newSupp = await db.supplier.create({
+                        name: intake.supplierName,
+                        contactEmail: intake.supplierEmail || '',
+                        contactPhone: intake.supplierContact || ''
+                    });
+                    supplierId = newSupp.id;
+                }
+            }
+
+            // Create contract from intake details
+            const newContract = await Contract.create({
+                contractName: `${intake.itemDescription || 'Intake Request Renewal'} - Renewed`,
+                description: intake.itemDescription || '',
+                contractTypeId: String(intake.categoryId || 1),
+                departmentId: intake.requesterDepartmentId || null,
+                startDate: intake.startDate || new Date(),
+                endDate: intake.endDate || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // Default 1 year
+                supplierId: supplierId,
+                budget: intake.requestedAmount || 0,
+                currency: 'USD', // Default currency
+                userId: req.user.id,
+                status: 'Active',
+                intakeRequestId: intake.id,
+                contractAttachmentFile: intake.intakeAttachement || intake.contractDocument || null
+            });
+
+            // Update intake request status to approved/active
+            await intake.update({ status: 'approved' });
+
+            return res.status(200).json({
+                status: true,
+                message: 'Intake renewal request processed and contract created successfully',
+                data: newContract
+            });
+        }
+
         const renewalRequest = await renewal_request.findByPk(id, {
             include: [{ model: Contract, as: 'contract' }]
         });

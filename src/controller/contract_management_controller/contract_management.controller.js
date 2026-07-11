@@ -11,7 +11,7 @@ const get_contracts_dashboard = async (req, res) => {
     // Check user role for data filtering
     const userType = req.user?.userType;
     const userId = req.user?.id;
-    const isSuperAdmin = userType === 'superadmin';
+    const isSuperAdmin = userType === 'superadmin' || userType === 'admin';
 
     // Build where clause for Admin users (filter by userId)
     const adminWhereClause = isSuperAdmin ? {} : { userId: userId };
@@ -176,7 +176,7 @@ const get_all_contracts = async (req, res) => {
     // Check user role for data filtering
     const userType = req.user?.userType;
     const userId = req.user?.id;
-    const isSuperAdmin = userType === 'superadmin';
+    const isSuperAdmin = userType === 'superadmin' || userType === 'admin';
 
     // Build where clause for Admin users (filter by userId)
     const adminWhereClause = isSuperAdmin ? {} : { userId: userId };
@@ -261,7 +261,7 @@ const update_contract = async (req, res) => {
     // Check user role for data filtering
     const userType = req.user?.userType;
     const userId = req.user?.id;
-    const isSuperAdmin = userType === 'superadmin';
+    const isSuperAdmin = userType === 'superadmin' || userType === 'admin';
 
     const { id } = req.params;
 
@@ -304,7 +304,7 @@ const delete_contract = async (req, res) => {
     // Check user role for data filtering
     const userType = req.user?.userType;
     const userId = req.user?.id;
-    const isSuperAdmin = userType === 'superadmin';
+    const isSuperAdmin = userType === 'superadmin' || userType === 'admin';
 
     const { id } = req.params;
 

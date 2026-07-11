@@ -14,41 +14,54 @@ const get_dashboard_data = async (req, res) => {
         const userId = req.user?.id;
         const isSuperAdmin = userType === 'superadmin';
 
-        // Build where clause for Admin users (filter by userId)
-        const adminWhereClause = isSuperAdmin ? {} : { userId: userId };
+        let transactionWhereClause = {};
+        let intakeWhereClause = {};
+        let contractWhereClause = {};
+
+        if (isSuperAdmin) {
+            // all access
+        } else if (userType === 'department') {
+            transactionWhereClause = { departmentId: userId };
+            intakeWhereClause = { requesterDepartmentId: userId };
+            contractWhereClause = { departmentId: userId };
+        } else {
+            transactionWhereClause = { userId: userId };
+            intakeWhereClause = { userId: userId };
+            contractWhereClause = { userId: userId };
+        }
 
         const endDate = new Date();
         const startOfSixMonths = new Date();
         startOfSixMonths.setMonth(endDate.getMonth() - 5); // Last 6 months
 
         // 1. Summary Counts
-        const totalTransactions = await Transaction.count({ where: adminWhereClause });
+        const totalTransactions = await Transaction.count({ where: transactionWhereClause });
         const uniqueSuppliers = await Transaction.count({
             distinct: true,
             col: "supplierId",
-            where: adminWhereClause
+            where: transactionWhereClause
         });
-        const totalIntakeRequests = await IntakeRequest.count({ where: adminWhereClause });
+        const totalIntakeRequests = await IntakeRequest.count({ where: intakeWhereClause });
 
         // Projects Completed: Intake Requests that have been fully approved by the workflow
         const projectsCompleted = await IntakeRequest.count({
-            where: { ...adminWhereClause, status: 'approved' }
+            where: { ...intakeWhereClause, status: 'approved' }
         });
 
         // Projects Pending: Intake Requests that are in 'pending' status
         const projectsPending = await IntakeRequest.count({
-            where: { ...adminWhereClause, status: 'pending' }
+            where: { ...intakeWhereClause, status: 'pending' }
         });
 
         // Projects Active: Intake Requests that are in 'active' status
         const projectsActive = await IntakeRequest.count({
-            where: { ...adminWhereClause, status: 'active' }
+            where: { ...intakeWhereClause, status: 'active' }
         });
 
         const expiringContractsCount = await Contract.count({
             where: {
                 endDate: { [Op.between]: [moment().toDate(), moment().add(30, 'days').toDate()] },
-                ...(isSuperAdmin ? {} : { userId: userId })
+                ...contractWhereClause
             },
         });
 
@@ -59,7 +72,7 @@ const get_dashboard_data = async (req, res) => {
                 [Sequelize.fn("SUM", Sequelize.col("amount")), "totalAmount"],
             ],
             include: [{ model: Supplier, as: "supplier", attributes: ["name"] }],
-            where: { ...adminWhereClause },
+            where: { ...transactionWhereClause },
             group: ["supplierId", "supplier.name"],
             order: [[Sequelize.fn("SUM", Sequelize.col("amount")), "DESC"]],
             limit: 5,
@@ -80,7 +93,7 @@ const get_dashboard_data = async (req, res) => {
             ],
             include: [{ model: Category, as: "category", attributes: [] }],
             where: {
-                ...adminWhereClause,
+                ...transactionWhereClause,
                 dateOfTransaction: { [Op.between]: [startOfSixMonths, endDate] }
             },
             group: ["month", "categoryId", "category.name"],
@@ -96,7 +109,7 @@ const get_dashboard_data = async (req, res) => {
             ],
             include: [{ model: Category, as: "category", attributes: [] }],
             where: {
-                ...adminWhereClause,
+                ...transactionWhereClause,
                 dateOfTransaction: {
                     [Op.between]: [moment().startOf('year').toDate(), moment().endOf('year').toDate()]
                 }
@@ -110,7 +123,7 @@ const get_dashboard_data = async (req, res) => {
         const comingRenewalsDetails = await Contract.findAll({
             where: {
                 endDate: { [Op.between]: [moment().toDate(), sixMonthsFromNow] },
-                ...(isSuperAdmin ? {} : { userId: userId })
+                ...contractWhereClause
             },
             attributes: ['id', 'contractName', 'endDate'],
             include: [
@@ -159,3 +172,4 @@ const get_dashboard_data = async (req, res) => {
 module.exports = {
     get_dashboard_data
 };
+

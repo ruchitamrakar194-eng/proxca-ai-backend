@@ -100,7 +100,9 @@ require('./association')(db);
 // { alter: false } ensures tables are created if missing, but doesn't force schema changes that could lose data
 (async () => {
     try {
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
         await db.sequelize.sync({ alter: false });
+        await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
         console.log('✅ Database schema synchronized successfully');
     } catch (err) {
         console.error('❌ Database synchronization failed:', err.message);
