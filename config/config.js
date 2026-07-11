@@ -101,7 +101,7 @@ require('./association')(db);
 (async () => {
     try {
         await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
-        await db.sequelize.sync({ alter: false });
+        await db.sequelize.sync({ alter: true });
         await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
         console.log('✅ Database schema synchronized successfully');
     } catch (err) {
