@@ -136,12 +136,12 @@ const add_contract = async (req, res) => {
 
     // Create a new contract
     const newContract = await Contract.create({
-      contractName,
+      contractName: contractName || 'Untitled Contract',
       description,
-      contractTypeId,
+      contractTypeId: contractTypeId || req.body.contractType || 'N/A',
       departmentId,
-      startDate,
-      endDate,
+      startDate: startDate || new Date(),
+      endDate: endDate || new Date(),
       sourceLeadName,
       sourceDirectorName,
       buisnessStackHolder,
