@@ -729,6 +729,11 @@ const delete_intake_request = async (req, res) => {
     await intake_request_comment.destroy({ where: { requestId: id } });
     await assignIntakeRequest.destroy({ where: { requestId: id } });
 
+    const contract_preference = db.contract_preference;
+    if (contract_preference) {
+      await contract_preference.destroy({ where: { intakeRequestId: id } });
+    }
+
     // ✅ Step 3: Delete the main intake request
     await request.destroy();
 
@@ -1002,6 +1007,37 @@ const update_request = async (req, res) => {
 
     // Update the request
     await existingRequest.update(updateData);
+
+    // ✅ Handle supplier update/assignment
+    const { supplierEmail, supplierName, supplierContact } = updateData;
+    if (supplierName || supplierEmail) {
+      let supplier = null;
+      if (supplierEmail) {
+        supplier = await Supplier.findOne({ where: { contactEmail: supplierEmail } });
+      }
+      if (!supplier && supplierName) {
+        supplier = await Supplier.findOne({ where: { name: supplierName } });
+      }
+
+      if (!supplier) {
+        supplier = await Supplier.create({
+          name: supplierName || 'Unknown Supplier',
+          contactEmail: supplierEmail || '',
+          contactPhone: supplierContact || '',
+        });
+      }
+
+      // Update or create assignIntakeRequest
+      const existingAssign = await assignIntakeRequest.findOne({ where: { requestId: existingRequest.id } });
+      if (existingAssign) {
+        await existingAssign.update({ supplierId: supplier.id });
+      } else {
+        await assignIntakeRequest.create({
+          requestId: existingRequest.id,
+          supplierId: supplier.id,
+        });
+      }
+    }
 
     return res.status(200).json({
       status: true,
