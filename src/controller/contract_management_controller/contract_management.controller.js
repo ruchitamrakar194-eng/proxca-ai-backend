@@ -228,8 +228,8 @@ const get_all_contracts = async (req, res) => {
     });
 
     if (contracts.length === 0) {
-      return res.status(404).json({
-        status: false,
+      return res.status(200).json({
+        status: true,
         message: 'No contracts found',
         data: [],
       });
