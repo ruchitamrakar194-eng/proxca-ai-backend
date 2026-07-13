@@ -262,6 +262,16 @@ const delete_department = async (req, res) => {
     // Client Licenses
     await db.client_license.update({ department_id: null }, { where: { department_id: id } });
 
+    // Cost Savings
+    if (db.costSaving) {
+      await db.costSaving.update({ departmentId: null }, { where: { departmentId: id } });
+    }
+
+    // Intake Request Comments
+    if (db.intake_request_comment) {
+      await db.intake_request_comment.update({ departmentId: null }, { where: { departmentId: id } });
+    }
+
     await department.destroy();
 
     res.status(200).json({
