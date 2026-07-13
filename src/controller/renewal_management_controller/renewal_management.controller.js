@@ -280,23 +280,16 @@ const add_renewal_request = async (req, res) => {
             addService
         } = req.body;
 
-        const requiredFields = [
-            'contractId',
-            'description',
-            'previousExpirationDate',
-            'newExpirationDate',
-            'selectDepartment',
-        ];
+        const contractIdVal = contractId || req.body.contractName || req.body.contract || null;
+        const deptVal = selectDepartment || req.body.departmentId || req.body.department || null;
+        const prevDateVal = previousExpirationDate || new Date();
+        const newDateVal = newExpirationDate || new Date();
+        const descVal = description || "Renewal Request";
 
-        const isEmpty = requiredFields.some(field => {
-            const value = req.body[field];
-            return value === null || value === undefined || value === '';
-        });
-
-        if (isEmpty) {
+        if (!contractIdVal || !deptVal) {
             return res.status(400).json({
                 status: false,
-                message: 'Please fill in all required fields',
+                message: 'Contract and Department must be selected',
             });
         }
 
@@ -321,13 +314,13 @@ const add_renewal_request = async (req, res) => {
 
             // ✅ Prepare update data
             const updateData = {
-                contractId,
-                description,
+                contractId: contractIdVal,
+                description: descVal,
                 amendments,
-                previousExpirationDate,
-                newExpirationDate,
+                previousExpirationDate: prevDateVal,
+                newExpirationDate: newDateVal,
                 additionalNotes,
-                selectDepartment,
+                selectDepartment: deptVal,
                 vendorName,
                 contractPrice,
                 addService,
@@ -349,13 +342,13 @@ const add_renewal_request = async (req, res) => {
 
         // ➕ ADD MODE (ID nahi hai)
         const newRenewalRequest = await renewal_request.create({
-            contractId,
-            description,
+            contractId: contractIdVal,
+            description: descVal,
             amendments,
-            previousExpirationDate,
-            newExpirationDate,
+            previousExpirationDate: prevDateVal,
+            newExpirationDate: newDateVal,
             additionalNotes,
-            selectDepartment,
+            selectDepartment: deptVal,
             renewalAttachmentFile,
             vendorName,
             contractPrice,
