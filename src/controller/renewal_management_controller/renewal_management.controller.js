@@ -380,9 +380,10 @@ const get_all_renewal_requests = async (req, res) => {
         const offset = (page - 1) * limit;
 
         let whereCondition = {};
-        if (userType !== 'superadmin') {
-            whereCondition.userId = userId;
-        }
+        // userId column does not exist in renewal_requests table, so we cannot filter by it currently
+        // if (userType !== 'superadmin') {
+        //     whereCondition.userId = userId;
+        // }
 
         const { rows: renewalRequests, count: totalRecords } = await renewal_request.findAndCountAll({
             where: whereCondition,
