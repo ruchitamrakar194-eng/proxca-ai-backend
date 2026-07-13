@@ -254,7 +254,7 @@ const delete_department = async (req, res) => {
     await db.supplier.update({ departmentId: null }, { where: { departmentId: id } });
 
     // Intake Request Approvers (Note: userId field points to department id in this system)
-    await db.intake_request_approvers.update({ userId: null }, { where: { userId: id, userType: 'department' } });
+    await db.intake_request_approvers.destroy({ where: { userId: id, userType: 'department' } });
 
     // SOW Consolidation (requestedTeamDepartmentId)
     await db.service_sow_consolidation.update({ requestedTeamDepartmentId: null }, { where: { requestedTeamDepartmentId: id } });
@@ -264,7 +264,7 @@ const delete_department = async (req, res) => {
 
     // Cost Savings
     if (db.costSaving) {
-      await db.costSaving.update({ departmentId: null }, { where: { departmentId: id } });
+      await db.costSaving.destroy({ where: { departmentId: id } });
     }
 
     // Intake Request Comments
